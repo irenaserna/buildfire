@@ -2,6 +2,8 @@
 var availableFields = [[true,true,true],[true,true,true],[true,true,true]];
 //number of moves
 var counter = 0;
+var numberOfRounds = 0;
+var playerInitialChoice = null
 
 
 // draws a simple 3x3 matrix that represents fields for this game, initally fields are disable until user choose a sign to play
@@ -24,11 +26,11 @@ function userChoice(sign){
     playerInitialChoice = sign
     document.getElementById('x').disabled = true;
     document.getElementById('o').disabled = true;
-    enable_all_buttons();
+    enableAllButtons();
 }
 
 // game area is not clickable in the beginning, disable all fields
-function disable_all_buttons(){
+function disableAllButtons(){
     for(var i = 0; i < 3; i++){
         for(var j = 0; j < 3; j++){
             var index = i.toString() + j.toString();
@@ -40,7 +42,7 @@ function disable_all_buttons(){
 }
 
 // after initial user choice, enable all fields on the board
-function enable_all_buttons(){
+function enableAllButtons(){
     for(var i = 0; i < 3; i++){
         for(var j = 0; j < 3; j++){
             var index = i.toString() + j.toString();
@@ -63,11 +65,11 @@ function userPlay(row,column){
     checkMove(row,column)?winPlayer():''
     counter == 9?draw():''
 
-    computer_choice();
+    computerPlay();
 }
 
 // time for computer to choose move
-function computer_choice(){
+function computerPlay(){
         // randomly choose fields position, choose row and column number from 0..2
         var row = Math.floor(Math.random() * 3);
         var column = Math.floor(Math.random() * 3);
@@ -94,30 +96,30 @@ function computer_choice(){
 
 // player wins
 function winPlayer(){
-    disable_all_buttons();
-    var number_of_player_wins = document.getElementById("player").innerText;
-    number_of_player_wins++;
-    document.getElementById("player").innerText = number_of_player_wins;
+    disableAllButtons();
+    var playerWinsNo = document.getElementById("player").innerText;
+    playerWinsNo++;
+    document.getElementById("player").innerText = playerWinsNo;
     alert("You won!")
     return;
 }
 
 // computer wins
 function winComputer(){
-    disable_all_buttons();
-    var number_of_computer_wins = document.getElementById("computer").innerText;
-    number_of_computer_wins++;
-    document.getElementById("computer").innerText = number_of_computer_wins;
-    alert("Kompjuter je pobijedio !!!")
+    disableAllButtons();
+    var computerWinsNo = document.getElementById("computer").innerText;
+    computerWinsNo++;
+    document.getElementById("computer").innerText = computerWinsNo;
+    alert("Computer wins!")
     return;
 }
 
 // noone wins this time
 function draw(){
-    var number_of_draws = document.getElementById("draw").innerText;
-    number_of_draws++;
-    document.getElementById("draw").innerText = number_of_draws;
-    alert("Nerijeseno !!!")
+    var numberOfDraws = document.getElementById("draw").innerText;
+    numberOfDraws++;
+    document.getElementById("draw").innerText = numberOfDraws;
+    alert("Draw!")
     return;
 }
 
@@ -169,6 +171,26 @@ function checkMove(row,column){
     }
 
     return false;
+}
+
+function newGame(){
+    if(playerInitialChoice == 0){
+        return;
+    }
+    for(var i = 0; i < 3; i++){
+        for(var j = 0; j < 3; j++){
+            var index = i.toString() + j.toString();
+            var btn = document.getElementById("field"+index);
+            btn.disabled = false;
+            btn.value = " ";
+            availableFields[i][j] = true;
+        }
+    }
+    counter = 0; // set counter to 0 for new game     
+    numberOfRounds++;
+    if(numberOfRounds%2 !=0){ // computer should play first now and then
+        computerPlay();
+    }
 }
 
 // on load function, renders board, initial user choice and few default buttons
